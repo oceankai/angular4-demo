@@ -19,6 +19,9 @@ export class ImageCropperCustomComponent {
     @Output()
     emitService = new EventEmitter;
 
+    croppedWidth:number;
+    croppedHeight:number;
+
     // 上传的url地址
     public url?: string = "/api/file/x-service/u"; 
     public uploader: FileUploader;
@@ -40,17 +43,21 @@ export class ImageCropperCustomComponent {
         //裁剪配置
         this.imgSettings = new CropperSettings();
         this.imgSettings.noFileInput = true;
-        this.imgSettings.width = 210;
-        this.imgSettings.height = 210;
+        this.imgSettings.compressRatio = 1.0;
+        this.imgSettings.width = 380;
+        this.imgSettings.height = 380;
         //Resulting image width
         this.imgSettings.croppedWidth = 210;
-        this.imgSettings.croppedHeight = 140;
+        this.imgSettings.croppedHeight = 210;
         this.imgSettings.canvasWidth = 500;
         this.imgSettings.canvasHeight = 380;
         this.imgSettings.minWidth = 100;
         this.imgSettings.minHeight = 100;
         this.imgSettings.cropperDrawSettings.strokeWidth = 2;
         this.imgSettings.rounded = false;
+        this.imgSettings.touchRadius = 40;
+        // false 任意矩形 true 正方形
+        this.imgSettings.keepAspect = true; 
         this.imgSettings.fileType = 'image/png';
         this.imgData = {};
         
@@ -70,6 +77,30 @@ export class ImageCropperCustomComponent {
       this.uploader.onSuccessItem = this.successItem.bind(this);
     }
 
+    // 文件监听 
+    // fileChangeListener($event) {
+    //   var image: any = new Image();
+    //   var file: File = $event.target.files[0];
+    //   var myReader: FileReader = new FileReader();
+    //   var that = this;
+    //   myReader.onloadend = function (loadEvent: any) {
+    //     image.src = loadEvent.target.result;
+    //     that.imgSettings.croppedWidth = image.width;
+    //     that.imgSettings.croppedHeight = image.height;
+    //   };
+    //   myReader.readAsDataURL(file);
+    // }
+
+    dataURLtoBlob(dataurl) {
+      var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      var blob = new window.Blob([u8arr], { type: mime });
+      return blob;
+    }
+
     /**
      * 上传
      */
@@ -81,9 +112,9 @@ export class ImageCropperCustomComponent {
       }
 
       //裁剪图片转blob
-      let blob: Blob = new Blob([this.imgData.image]);
+      let blob = this.dataURLtoBlob(this.imgData.image);
       //创建file
-      let fileFromBlob: File = new File([blob], "cropedImage..png");
+      let fileFromBlob: File = new File([blob], "cropedImage.png");
       //添加裁剪图片file
       this.uploader.addToQueue(new Array<File>(fileFromBlob));
       //上传图片，queue[0]原图，queue[1]裁剪图片
@@ -102,9 +133,7 @@ export class ImageCropperCustomComponent {
         this.emitService.emit(tempRes.data.url)
 
         this.toolsPvd.toastSuccess('上传成功');
-        setTimeout(() => {
-          this.close();
-        }, 1500);
+        this.close();
   
       } else {            
         // 上传文件后获取服务器返回的数据错误        

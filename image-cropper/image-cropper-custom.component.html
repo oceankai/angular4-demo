@@ -8,13 +8,13 @@
     <div class="modal-body">
         <div class="row-horizontal">
             <div class="c-avatar-cut-box">
-                <img-cropper #imgCropper [image]="imgData" [settings]="imgSettings" ></img-cropper>
+                <img-cropper #imgCropper [image]="imgData" [settings]="imgSettings"></img-cropper>
             </div>
             <div class="c-avatar-preview-box c-ml15 text-left">
                 <div class="c-avatar-title">图片预览</div>
                 <div class="c-mt15">
-                    <img class="center-block c-avatar-img-lg" [ngClass]="{'rounded-circle': imgSettings.rounded}" *ngIf="imgData.image" [src]="imgData.image" >
-                    <img class="center-block c-avatar-img-lg" [ngClass]="{'rounded-circle': imgSettings.rounded}" *ngIf="!imgData.image" src="../../../../assets/img/preloader/placeholder-img.png">
+                    <img class="center-block c-avatar-img-lg" [ngClass]="{'rounded-circle': imgSettings.rounded}" *ngIf="imgData.image" [src]="imgData.image" [width]="imgSettings.croppedWidth" [height]="imgSettings.croppedHeight">
+                    <img class="center-block c-avatar-img-lg" [ngClass]="{'rounded-circle': imgSettings.rounded}" *ngIf="!imgData.image" src="../../../../assets/img/preloader/placeholder-img.png" [width]="imgSettings.croppedWidth" [height]="imgSettings.croppedHeight">
                 </div>
             </div>
         </div>
