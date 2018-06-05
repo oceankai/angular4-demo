@@ -1,0 +1,18 @@
+<!-- Generated template for the IonProductsComponent component -->
+<div class="product">
+  <ion-row wrap>
+    <ion-col tappable *ngFor="let item of products.data" [ngClass]="{'grid-2':grid == 'grid-2','grid-5':grid == 'grid-5'}" (click)="goDetails(item)">
+      <img *ngIf="item.specifications[0].imgList" src="{{ item.specifications[0].imgList[0].icon + '!400x400' }}">
+      <img src="assets/img/default_good_icon.png" *ngIf="!item.specifications">
+      <p>{{ item.name }}</p>
+      <div class="list-price buy">
+        <span class="price-new" *ngIf="item.price">
+          <i>￥</i>{{ item.price }}</span>
+        <span class="price-new c-fs14" *ngIf="!item.price">
+          价格待定</span>
+
+        <!-- <i class="del">￥<span>{{ item.price.originPrice.amount }}</span></i> -->
+      </div>
+    </ion-col>
+  </ion-row>
+</div>
